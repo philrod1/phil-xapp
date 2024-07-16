@@ -24,8 +24,13 @@ def index():
 
 @dashboard_app.route('/trigger/<function_name>', methods=['POST'])
 def trigger_function(function_name):
+    data = request.form.to_dict()  # Convert all form data to a dictionary
+
     try:
-        response = requests.post(f"{PHIL_XAPP_URL}/{function_name}")
+        if data:
+            response = requests.post(f"{PHIL_XAPP_URL}/{function_name}", data=data)
+        else:
+            response = requests.post(f"{PHIL_XAPP_URL}/{function_name}")
         response.raise_for_status()  # Raise an HTTPError if the HTTP request returned an unsuccessful status code
         
         # If we got here, it means the request was successful
