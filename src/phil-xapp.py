@@ -113,13 +113,14 @@ def run_a1_health_check():
     except Exception as e:
         logging.error(f"Error executing A1 Health Check: {str(e)}")
         return jsonify(message=f"Error: {str(e)}"), 500
-        
-whatever = Whatever(rmr_xapp)
+
+
+what = Whatever(rmr_xapp)
 @app.route('/whatever', methods=['POST'])
 def run_whatever():
-    print("Whatever endpoint called")
+    print(f"Whatever endpoint called with {request.form}")
     try:
-        message = whatever.send_rmr_payload(request.form.payload, request.form.mtype)
+        message = "HERE" #what.send_rmr_payload(request.form.payload, request.form.mtype)
         logging.info(message)
         return jsonify(message=message)
     except Exception as e:
@@ -137,6 +138,7 @@ def run_traffic_steering():
     except Exception as e:
         logging.error(f"Error executing Traffic Steering: {str(e)}")
         return jsonify(message=f"Error: {str(e)}"), 500
+
 
 # Store the subprocess reference
 try:
