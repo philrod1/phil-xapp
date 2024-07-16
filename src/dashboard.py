@@ -15,8 +15,8 @@ dashboard_app.secret_key = 'your_secret_key_here'
 logging.basicConfig(filename='dashboard.log', level=logging.INFO,
                     format='%(asctime)s:%(levelname)s:%(message)s')
 
-# The service URL for your ts-xApp in Kubernetes
-TS_XAPP_URL = "http://ts-xapp-service:5000"  
+# The service URL for your phil-xapp in Kubernetes
+PHIL_XAPP_URL = "http://127.0.0.1:5000"  
 
 @dashboard_app.route('/')
 def index():
@@ -25,7 +25,7 @@ def index():
 @dashboard_app.route('/trigger/<function_name>', methods=['POST'])
 def trigger_function(function_name):
     try:
-        response = requests.post(f"{TS_XAPP_URL}/{function_name}")
+        response = requests.post(f"{PHIL_XAPP_URL}/{function_name}")
         response.raise_for_status()  # Raise an HTTPError if the HTTP request returned an unsuccessful status code
         
         # If we got here, it means the request was successful

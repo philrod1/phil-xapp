@@ -9,14 +9,14 @@ logging.basicConfig(
     level=logging.INFO,  # You can set this to DEBUG for more verbose output
     format='%(asctime)s:%(levelname)s:%(message)s',
     handlers=[
-        logging.FileHandler('init-ts-xapp.log'),
+        logging.FileHandler('init-phil-xapp.log'),
         logging.StreamHandler(sys.stdout)
     ]
 )
 print("Running __init__.py")
 def load_config():
     # Use the absolute path to the configuration file
-    config_path = '/app/ts-xapp/init/ts-xapp-config-file.json'
+    config_path = '/app/phil-xapp/init/phil-xapp-config-file.json'
     
     # Print the computed config path to verify it's correct
     print("Config path:", config_path)
@@ -56,14 +56,14 @@ def set_environment_variables(config):
         return False
 
 def start_ts_xapp():
-    cmd = ["python3", "ts-xapp.py"]
+    cmd = ["python3", "phil-xapp.py"]
     process = subprocess.Popen(cmd)
     return process
 
 def terminate_process(process):
     if process:
         process.terminate()
-        logging.info("ts-xapp.py terminated.")
+        logging.info("phil-xapp.py terminated.")
     sys.exit(0)
 
 if __name__ == "__main__":

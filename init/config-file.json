@@ -400,13 +400,13 @@
                     "RIC_GNODEB_POLICY_QUERY_RESP"
                 ],
                 "policies": [20008],
-                "description": "rmr receive data port for ts-xapp"
+                "description": "rmr receive data port for phil-xapp"
             },
             {
                 "name": "rmr-route",
                 "container": "phil-xapp",
                 "port": 4561,
-                "description": "rmr route port for ts-xapp"
+                "description": "rmr route port for phil-xapp"
             }
         ]
     },

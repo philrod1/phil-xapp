@@ -59,8 +59,8 @@ if [ "$(id -u)" != "0" ]; then
    exit 1
 fi
 
-# Check if the current directory is /home/ubnt/oaic/ts-xapp
-if [ "$(pwd)" != "/home/ubnt/main-file-repo/oaic/ts-xapp" ]; then
+# Check if the current directory is /home/ubnt/oaic/phil-xapp
+if [ "$(pwd)" != "/home/ubnt/main-file-repo/oaic/phil-xapp" ]; then
     echo "This script must be run from the /home/ubnt/oaic directory"
     exit 1
 fi
@@ -119,28 +119,28 @@ sleep 3
 sudo nginx -t || { echo 'nginx configuration test failed'; check_continue; }
 cd ${oaic}
 # Overwrite the file if it exists
-sudo cp -f /home/ubnt/main-file-repo/oaic/ts-xapp/init/ts-xapp-config-file.json /var/www/xApp_config.local/config_files/ || { echo 'Failed to copy config file'; check_continue; }
-[ -r "/var/www/xApp_config.local/config_files/ts-xapp-config-file.json" ] || { echo 'Config File not found or is not readable'; check_continue; }
+sudo cp -f /home/ubnt/main-file-repo/oaic/phil-xapp/init/phil-xapp-config-file.json /var/www/xApp_config.local/config_files/ || { echo 'Failed to copy config file'; check_continue; }
+[ -r "/var/www/xApp_config.local/config_files/phil-xapp-config-file.json" ] || { echo 'Config File not found or is not readable'; check_continue; }
 ls -l /var/www/xApp_config.local/config_files/
 pwd
-#sudo chmod 755 /var/www/xApp_config.local/config_files/ts-xapp-config-file.json || { echo 'Failed to change file permissions'; check_continue; }
+#sudo chmod 755 /var/www/xApp_config.local/config_files/phil-xapp-config-file.json || { echo 'Failed to change file permissions'; check_continue; }
 sudo systemctl reload nginx || { echo 'Failed to reload nginx'; check_continue; }
 echo ">>> getting machine IP..."
 export MACHINE_IP=`hostname  -I | cut -f1 -d' '`
 sleep 3
 echo "Machine IP: $MACHINE_IP"
 echo ">>> checking for config-file"
-curl http://${MACHINE_IP}:5010/config_files/ts-xapp-config-file.json || { echo 'Failed to fetch config-file'; check_continue; }
+curl http://${MACHINE_IP}:5010/config_files/phil-xapp-config-file.json || { echo 'Failed to fetch config-file'; check_continue; }
 echo ">>> building docker image...."
-cd ${oaic}/ts-xapp
+cd ${oaic}/phil-xapp
 echo ">>> checking directory"
 ls
-echo ">>> Creating ts-xapp Docker image"
-echo ">>> Now, we create a docker image of the ts-xApp using the given docker file."
-sudo docker build . -t xApp-registry.local:5008/ts-xapp:1.0.0 || { echo 'docker build failed'; check_continue; }
+echo ">>> Creating phil-xapp Docker image"
+echo ">>> Now, we create a docker image of the phil-xapp using the given docker file."
+sudo docker build . -t xApp-registry.local:5008/phil-xapp:1.0.0 || { echo 'docker build failed'; check_continue; }
 
 # Check if the Docker image was successfully created
-IMAGE_EXISTS=$(sudo docker image ls | grep "xApp-registry.local:5008/ts-xapp" | grep "1.0.0")
+IMAGE_EXISTS=$(sudo docker image ls | grep "xApp-registry.local:5008/phil-xapp" | grep "1.0.0")
 
 # Check if the image exists
 if [ -n "$IMAGE_EXISTS" ]; then
@@ -154,7 +154,7 @@ if [ -n "$IMAGE_EXISTS" ]; then
 else
     echo "################################################################################################################################"
     echo "#                                                                                                                              #"
-    echo "#    No Docker Image Found for ts-xapp !                                                                                       #"
+    echo "#    No Docker Image Found for phil-xapp !                                                                                       #"
     echo "#                                                                                                                              #"
     echo "################################################################################################################################"
 fi
@@ -174,7 +174,7 @@ else
   echo "################################################################################################################################"
   echo "#                                                                                                                              #"
   # Execute the command and display its output
-  sudo docker images --filter=reference='xApp-registry.local:5008/ts-xapp:1.0.0'
+  sudo docker images --filter=reference='xApp-registry.local:5008/phil-xapp:1.0.0'
   echo "#                                                                                                                              #"
   echo "################################################################################################################################"
    
@@ -194,14 +194,14 @@ check_status() {
 ##############################################################################
 # Set the namespace and service name
 NAMESPACE="ricxapp"
-SERVICE_NAME="ts-xapp-service"
+SERVICE_NAME="phil-xapp-service"
 
 # Check if the service already exists
 if kubectl get svc $SERVICE_NAME -n $NAMESPACE > /dev/null 2>&1; then
     echo "$SERVICE_NAME already exists in namespace $NAMESPACE."
 else
     # Apply the configuration
-    kubectl apply -f ts-xapp-service.yaml
+    kubectl apply -f phil-xapp-service.yaml
     
     # Check if the service creation was successful
     if kubectl get svc $SERVICE_NAME -n $NAMESPACE > /dev/null 2>&1; then
@@ -250,15 +250,15 @@ check_status "Failed to get charts"
 
 ############################################################################
 # Prepare the JSON file for xApp onboarding
-echo '{"config-file.json_url":"http://'$MACHINE_IP':5010/config_files/ts-xapp-config-file.json"}' > ts-xapp-onboard.url
-check_status "Failed to create ts-xapp-onboard.url"
+echo '{"config-file.json_url":"http://'$MACHINE_IP':5010/config_files/phil-xapp-config-file.json"}' > phil-xapp-onboard.url
+check_status "Failed to create phil-xapp-onboard.url"
 
-echo ">>> ts-xapp-onboard.url"
-cat ts-xapp-onboard.url
+echo ">>> phil-xapp-onboard.url"
+cat phil-xapp-onboard.url
 
 # Attempt to onboard the xApp
 echo ">>> curl POST... Now we are ready to deploy the xApp"
-curl -v -L -X POST "http://$KONG_PROXY:32080/onboard/api/v1/onboard/download" --header 'Content-Type: application/json' --data-binary "@ts-xapp-onboard.url"
+curl -v -L -X POST "http://$KONG_PROXY:32080/onboard/api/v1/onboard/download" --header 'Content-Type: application/json' --data-binary "@phil-xapp-onboard.url"
 check_status "Failed to post onboard download"
 
 # Check the onboarded charts
@@ -293,7 +293,7 @@ check_status() {
 
 # Attempt to post the xApp
 echo ">>> curl POST..."
-curl -v -L -X POST "http://$KONG_PROXY:32080/appmgr/ric/v1/xapps" --header 'Content-Type: application/json' --data-raw '{"xappName": "ts-xapp"}'
+curl -v -L -X POST "http://$KONG_PROXY:32080/appmgr/ric/v1/xapps" --header 'Content-Type: application/json' --data-raw '{"xappName": "phil-xapp"}'
 check_status "Failed to post xApp"
 
 # Verifying xApp Deployment
@@ -304,11 +304,11 @@ echo "#                                                                         
 echo "# Verifying xApp Deployment...                                                                                                 #"
 
 # Capture the output of the command you want to run
-POD_STATUS=$(sudo kubectl get pods -A | grep ricxapp-ts-xapp)
+POD_STATUS=$(sudo kubectl get pods -A | grep ricxapp-phil-xapp)
 
 # Check if the variable doesn't contain anything
 if [ -z "$POD_STATUS" ]; then
-    echo "# No ricxapp-ts-xapp pods found in the ricxapp namespace.                                                                     #"
+    echo "# No ricxapp-phil-xapp pods found in the ricxapp namespace.                                                                     #"
 else
     # If the variable contains output, print it
     echo "# $POD_STATUS                                                                                                                #"
@@ -360,24 +360,24 @@ else
 fi
 
 echo "################################################################################################################################"
-echo "# Verifying ts-xapp is Running"
+echo "# Verifying phil-xapp is Running"
 echo "################################################################################################################################"
 
 
-# Function to get the status of ts-xapp pod
+# Function to get the status of phil-xapp pod
 get_ts_xapp_status() {
-    kubectl get pods -n ricxapp -l app=ricxapp-ts-xapp -o jsonpath='{.items[*].status.phase}'
+    kubectl get pods -n ricxapp -l app=ricxapp-phil-xapp -o jsonpath='{.items[*].status.phase}'
 }
 
-# Wait for ts-xapp pod to be in Running status
+# Wait for phil-xapp pod to be in Running status
 TS_XAPP_RUNNING=$(get_ts_xapp_status)
 while [[ "$TS_XAPP_RUNNING" != "Running" ]]; do
-    echo "Waiting for ts-xapp pod to be in Running status. Current status: $TS_XAPP_RUNNING"
+    echo "Waiting for phil-xapp pod to be in Running status. Current status: $TS_XAPP_RUNNING"
     sleep 5
     TS_XAPP_RUNNING=$(get_ts_xapp_status)
 done
 
-echo "ts-xapp pod is running."
+echo "phil-xapp pod is running."
 
 
 echo "################################################################################################################################"
@@ -393,10 +393,10 @@ cleanup() {
     kill $PORT_FORWARD_PID 2>/dev/null
     sleep 2
     if ps -p $PORT_FORWARD_PID > /dev/null; then
-      echo "Port forwarding for ricxapp-ts-xapp did not stop gracefully, force stopping..."
+      echo "Port forwarding for ricxapp-phil-xapp did not stop gracefully, force stopping..."
       kill -9 $PORT_FORWARD_PID 2>/dev/null
     fi
-    echo "Stopped port forwarding for ricxapp-ts-xapp."
+    echo "Stopped port forwarding for ricxapp-phil-xapp."
   fi
 }
 
@@ -417,32 +417,32 @@ fi
 
 # Check if the user wants to see the xApp logs
 while true; do
-    read -p "Do you see the ricxapp-ts-xapp in the list and want to check its logs? (y/n): " choice
+    read -p "Do you see the ricxapp-phil-xapp in the list and want to check its logs? (y/n): " choice
     case "$choice" in 
       y|Y )
         echo 'Checking xApp logs...'
 
         # Retrieve the Pod Name
-        POD_NAME=$(kubectl get pods -n ricxapp -l app=ricxapp-ts-xapp -o jsonpath='{.items[0].metadata.name}')
+        POD_NAME=$(kubectl get pods -n ricxapp -l app=ricxapp-phil-xapp -o jsonpath='{.items[0].metadata.name}')
         if [ -z "$POD_NAME" ]; then
-          echo "Error: ricxapp-ts-xapp pod not found in namespace 'ricxapp'."
+          echo "Error: ricxapp-phil-xapp pod not found in namespace 'ricxapp'."
           exit 1
         fi
 
         # Check if port 5001 is already in use
         if lsof -i :5001 &>/dev/null; then
-          echo "Port 5001 is already in use. Please free up the port or ensure ricxapp-ts-xapp port-forwarding is set up correctly."
+          echo "Port 5001 is already in use. Please free up the port or ensure ricxapp-phil-xapp port-forwarding is set up correctly."
           exit 1
         fi
 
         # Start port-forward in the background
         kubectl port-forward pod/$POD_NAME 5001:5001 -n ricxapp &
         PORT_FORWARD_PID=$!
-        echo "Port forwarding for ricxapp-ts-xapp is now running in the background. PID: $PORT_FORWARD_PID"
+        echo "Port forwarding for ricxapp-phil-xapp is now running in the background. PID: $PORT_FORWARD_PID"
 
         # Check xApp logs
-        if ! kubectl logs -f -n ricxapp -l app=ricxapp-ts-xapp; then
-            echo "Error: Failed to retrieve logs. Make sure your cluster is reachable and the ricxapp-ts-xapp is deployed correctly."
+        if ! kubectl logs -f -n ricxapp -l app=ricxapp-phil-xapp; then
+            echo "Error: Failed to retrieve logs. Make sure your cluster is reachable and the ricxapp-phil-xapp is deployed correctly."
         fi
         
         # Kill the port-forwarding process after checking the logs

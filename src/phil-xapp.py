@@ -1,5 +1,5 @@
-# This is Traffic Steering xApp version 1.0.0 by Milad Natanzi
-# ts-xapp.py
+
+# phil-xapp.py
 import json
 import os
 import sys
@@ -31,7 +31,7 @@ logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s:%(levelname)s:%(message)s',
     handlers=[
-        logging.FileHandler('ts-xapp.log'),
+        logging.FileHandler('phil-xapp.log'),
         logging.StreamHandler(sys.stdout)
     ]
 )
@@ -48,7 +48,7 @@ a1_health_check_handler = A1HealthCheck(rmr_xapp)
 a1_policy_manager.startup()
 
 # Provide the correct URI for the Subscription Manager
-subscription_manager_uri = "http://10.244.0.18:3800/"
+subscription_manager_uri = "http://10.244.0.180:3800/"
 
 # Create an instance of the SubscriptionManager
 subscription_manager = SubscriptionManager(uri=subscription_manager_uri, local_address="0.0.0.0", local_port=8088)
@@ -56,9 +56,9 @@ subscription_manager = SubscriptionManager(uri=subscription_manager_uri, local_a
 # Set the SubscriptionManager in default_handler
 default_handler.set_subscription_manager(subscription_manager)
 
-ts_app = Flask(__name__)
+app = Flask(__name__)
 
-@ts_app.route('/sync_kpimon', methods=['POST'])
+@app.route('/sync_kpimon', methods=['POST'])
 def run_sync_kpimon_data():
     print("Sync KPI Mon Data endpoint called")
     try:
@@ -69,7 +69,7 @@ def run_sync_kpimon_data():
         logging.error(f"Error syncing data with KPImon: {str(e)}")
         return jsonify(message=f"Error: {str(e)}"), 500
 
-@ts_app.route('/rmr_health_check', methods=['POST'])
+@app.route('/rmr_health_check', methods=['POST'])
 def run_rmr_health_check():
     print("rmr_health_check endpoint called")
     try:
@@ -80,7 +80,7 @@ def run_rmr_health_check():
         logging.error(f"Error executing RMR Health Check: {str(e)}")
         return jsonify(message=f"Error: {str(e)}"), 500
 
-@ts_app.route('/sdl_health_check', methods=['POST'])
+@app.route('/sdl_health_check', methods=['POST'])
 def run_sdl_health_check():
     print("sdl_health_check endpoint called")
     try:
@@ -91,7 +91,7 @@ def run_sdl_health_check():
         logging.error(f"Error executing SDL Health Check: {str(e)}")
         return jsonify(message=f"Error: {str(e)}"), 500
         
-@ts_app.route('/e2_health_check', methods=['POST'])
+@app.route('/e2_health_check', methods=['POST'])
 def run_e2_health_check():
     print("E2 health check endpoint called")
     try:
@@ -103,7 +103,7 @@ def run_e2_health_check():
         return jsonify(message=f"Error: {str(e)}"), 500        
         
 a1_health_check = A1HealthCheck(rmr_xapp)
-@ts_app.route('/a1_health_check', methods=['POST'])
+@app.route('/a1_health_check', methods=['POST'])
 def run_a1_health_check():
     print("A1 health check endpoint called")
     try:
@@ -115,7 +115,7 @@ def run_a1_health_check():
         return jsonify(message=f"Error: {str(e)}"), 500
         
 whatever = Whatever(rmr_xapp)
-@ts_app.route('/whatever', methods=['POST'])
+@app.route('/whatever', methods=['POST'])
 def run_whatever():
     print("Whatever endpoint called")
     try:
@@ -127,7 +127,7 @@ def run_whatever():
         return jsonify(message=f"Error: {str(e)}"), 500
 
 
-@ts_app.route('/traffic_steering', methods=['POST'])
+@app.route('/traffic_steering', methods=['POST'])
 def run_traffic_steering():
     print("traffic_steering endpoint called")
     try:
@@ -142,7 +142,7 @@ def run_traffic_steering():
 try:
     logging.debug("Attempting to start the dashboard subprocess...")
     dashboard_process = subprocess.Popen(
-        ["python3", "/app/ts-xapp/src/dashboard.py"],
+        ["python3", "/app/phil-xapp/src/dashboard.py"],
         stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
     logging.debug("Dashboard subprocess started successfully.")
@@ -161,7 +161,7 @@ signal.signal(signal.SIGTERM, terminate_process)
 
 if __name__ == "__main__":
     # Log a startup message
-    logging.info("ts-xApp starting...")
+    logging.info("phil-xapp starting...")
 
     # Initialize subscriptions
     subscription_manager.initialize_subscriptions()
@@ -169,8 +169,8 @@ if __name__ == "__main__":
     # Attach handlers to Flask's logger if needed
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(logging.DEBUG)
-    ts_app.logger.addHandler(handler)
-    ts_app.logger.setLevel(logging.DEBUG)
+    app.logger.addHandler(handler)
+    app.logger.setLevel(logging.DEBUG)
 
     # Initiate data synchronization from KPImon
     try:
@@ -180,4 +180,4 @@ if __name__ == "__main__":
         logging.error(f"Error initiating data synchronization from KPImon: {str(e)}")
 
     # Start the Flask app
-    ts_app.run(host='0.0.0.0', port=5000)  # go to http://127.0.0.1:5001 in your browser
+    app.run(host='0.0.0.0', port=5000)  # go to http://127.0.0.1:5001 in your browser

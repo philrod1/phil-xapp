@@ -1,12 +1,12 @@
-#ts-xapp-service.yaml
+#phil-xapp-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: ts-xapp-service
+  name: phil-xapp-service
   namespace: ricxapp
 spec:
   selector:
-    app: ricxapp-ts-xapp
+    app: ricxapp-phil-xapp
   ports:
     - name: port-6000
       protocol: TCP

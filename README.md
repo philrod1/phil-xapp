@@ -52,18 +52,18 @@ Start with root permission and:
    ./kpimon.sh
 4. Clone TS xApp fro the below repo
    ```bash
-   git clone https://github.com/natanzi/ts-xapp
+   git clone https://github.com/philrod1/phil-xapp
    
-5. Go to ts-xapp folder and run it:
+5. Go to phil-xapp folder and run it:
    ```bash
-   chmod +x ts-xapp.sh
-   ./ts-xapp.sh
-6. Open the below address in your browser to see the ts-xapp dashboard and grafana:
+   chmod +x phil-xapp.sh
+   ./phil-xapp.sh
+6. Open the below address in your browser to see the phil-xapp dashboard and grafana:
    ```bash
    http://localhost:5001/
    http://localhost:3000/
    
-7. To remove the ts-xapp:
+7. To remove the phil-xapp:
    ```bash
    chmod +x del-tsxapp.sh
    ./del-tsxapp.sh   
@@ -72,20 +72,20 @@ Start with root permission and:
 > ### xApp Re-Deployment & Undeployment
 > To redeploy the xApp on the near-RT RIC side, run:
 > ```bash
-> sudo kubectl -n ricxapp rollout restart deployment ricxapp-ts-xapp
+> sudo kubectl -n ricxapp rollout restart deployment ricxapp-phil-xapp
 > ```
 > To undeploy the xApp, first retrieve the IP address of the App Manager:
 > ```bash
 > export APPMGR_HTTP=`sudo kubectl get svc -n ricplt --field-selector metadata.name=service-ricplt-appmgr-http -o jsonpath='{.items[0].spec.clusterIP}'`
-> curl -L -X DELETE http://${APPMGR_HTTP}:8080/ric/v1/xapps/ts-xapp
+> curl -L -X DELETE http://${APPMGR_HTTP}:8080/ric/v1/xapps/phil-xapp
 > ```
 > To remove the xApp descriptors from the Chart Museum, execute:
 > ```bash
-> curl -L -X DELETE "http://${ONBOARDER_HTTP}:8080/api/charts/ts-xapp/1.0.0"
+> curl -L -X DELETE "http://${ONBOARDER_HTTP}:8080/api/charts/phil-xapp/1.0.0"
 > ```
 > To delete a Docker image
 > ```bash
-> sudo docker rmi -f xApp-registry.local:5008/ts-xapp:1.0.0
+> sudo docker rmi -f xApp-registry.local:5008/phil-xapp:1.0.0
 > ```
 > To see the Docker image
 > ```bash

@@ -14,7 +14,7 @@ setup(
     long_description_content_type="text/markdown",
     author='Phil Rodgers',
     author_email='snatanzi@wpi.edu',
-    url="https://github.com/natanzi/ts-xapp",
+    url="https://github.com/philrod32/phil-xapp",
     install_requires=[
         "wheel",
         "ricxappframe>=1.1.1",
@@ -33,7 +33,7 @@ setup(
     python_requires='==3.11',  
     entry_points={
         "console_scripts": [
-            "ts-xapp=src.ts-xapp:main",  # This tells setuptools to create a script that runs src.ts_xApp.main()
+            "phil-xapp=src.phil-xapp:main",  # This tells setuptools to create a script that runs src.ts_xApp.main()
         ]
     },
     license="Apache 2.0",

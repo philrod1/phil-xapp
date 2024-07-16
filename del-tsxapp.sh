@@ -94,26 +94,26 @@ check_status "Failed to retrieve ONBOARDER_HTTP IP" "ONBOARDER_HTTP IP retrieved
 
 # Undeploy the xApp
 echo "Deleting xApp from App Manager..."
-curl -L -X DELETE http://${APPMGR_HTTP}:8080/ric/v1/xapps/ts-xapp
+curl -L -X DELETE http://${APPMGR_HTTP}:8080/ric/v1/xapps/phil-xapp
 check_status "Failed to delete xApp from App Manager" "xApp deleted from App Manager successfully"
 
 # Remove xApp descriptors from Chart Museum
 echo "Removing xApp descriptors from Chart Museum..."
-curl -L -X DELETE "http://${ONBOARDER_HTTP}:8080/api/charts/ts-xapp/1.0.0"
+curl -L -X DELETE "http://${ONBOARDER_HTTP}:8080/api/charts/phil-xapp/1.0.0"
 check_status "Failed to remove xApp descriptors from Chart Museum" "xApp descriptors removed from Chart Museum successfully"
 
 # Delete Docker image
 echo "Deleting Docker image..."
-sudo docker rmi -f xApp-registry.local:5008/ts-xapp:1.0.0
+sudo docker rmi -f xApp-registry.local:5008/phil-xapp:1.0.0
 check_status "Failed to delete Docker image" "Docker image deleted successfully"
 
 # Remove Kubernetes resources associated with the xApp
 echo "Removing Kubernetes resources associated with the xApp..."
 for resource in pods services deployments; do
     if [ "$resource" == "pods" ]; then
-        kubectl delete $resource -n ricxapp -l app=ricxapp-ts-xapp --force --grace-period=0
+        kubectl delete $resource -n ricxapp -l app=ricxapp-phil-xapp --force --grace-period=0
     else
-        kubectl delete $resource -n ricxapp -l app=ricxapp-ts-xapp
+        kubectl delete $resource -n ricxapp -l app=ricxapp-phil-xapp
     fi
 done
 check_status "Failed to remove Kubernetes resources" "Kubernetes resources removed successfully"
