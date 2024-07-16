@@ -55,7 +55,7 @@ def set_environment_variables(config):
         logging.error(f"Error setting environment variables. Reason = {str(e)}")
         return False
 
-def start_ts_xapp():
+def start_phil_xapp():
     cmd = ["python3", "phil-xapp.py"]
     process = subprocess.Popen(cmd)
     return process
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     
     if set_environment_variables(config):
         logging.info("Environment variables set successfully")
-        process = start_ts_xapp()
+        process = start_phil_xapp()
         
         # Attach the handler to SIGINT (Ctrl+C) and SIGTERM (termination signal)
         signal.signal(signal.SIGINT, lambda signum, frame: terminate_process(process))

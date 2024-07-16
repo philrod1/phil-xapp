@@ -365,16 +365,16 @@ echo "##########################################################################
 
 
 # Function to get the status of phil-xapp pod
-get_ts_xapp_status() {
+get_phil_xapp_status() {
     kubectl get pods -n ricxapp -l app=ricxapp-phil-xapp -o jsonpath='{.items[*].status.phase}'
 }
 
 # Wait for phil-xapp pod to be in Running status
-TS_XAPP_RUNNING=$(get_ts_xapp_status)
-while [[ "$TS_XAPP_RUNNING" != "Running" ]]; do
-    echo "Waiting for phil-xapp pod to be in Running status. Current status: $TS_XAPP_RUNNING"
+PHIL_XAPP_RUNNING=$(get_ph_xapp_status)
+while [[ "$PHIL_XAPP_RUNNING" != "Running" ]]; do
+    echo "Waiting for phil-xapp pod to be in Running status. Current status: $PHIL_XAPP_RUNNING"
     sleep 5
-    TS_XAPP_RUNNING=$(get_ts_xapp_status)
+    PHIL_XAPP_RUNNING=$(get_phil_xapp_status)
 done
 
 echo "phil-xapp pod is running."
