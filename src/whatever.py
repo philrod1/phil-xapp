@@ -9,7 +9,11 @@ class Whatever:
 
     def send_rmr_payload(self, payload, mtype):
         try:
-            res = self._rmr_xapp.rmr_send(payload, int(mtype))
+            message = {
+              "type": int(mtype),
+              "payload": payload
+            }
+            res = self._rmr_xapp.rmr_send(message)
             self.logger.info(f"{payload} :: {mtype}")
             return f"{payload} :: {mtype} = {res}"
         except Exception as e:
