@@ -118,7 +118,7 @@ def run_a1_health_check():
 what = Whatever(rmr_xapp)
 @app.route('/whatever', methods=['POST'])
 def run_whatever():
-    print(f"Whatever endpoint called with {request.form}")
+    print(f"Whatever endpoint called with {request.json}")
     try:
         message = "HERE" #what.send_rmr_payload(request.form.payload, request.form.mtype)
         logging.info(message)
