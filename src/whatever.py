@@ -9,12 +9,8 @@ class Whatever:
 
     def send_rmr_payload(self, payload, mtype):
         try:
-            message = {
-              "type": int(mtype),
-              "payload": payload
-            }
-            res = self._rmr_xapp.rmr_send(message)
-            self.logger.info(f"{payload} :: {mtype}")
+            res = self._rmr_xapp.rmr_send(payload=payload, mtype=int(mtype))
+            self.logger.info(f"{payload} :: {mtype}.  Healthy? {self._rmr_xapp.healthcheck()}")
             return f"{payload} :: {mtype} = {res}"
         except Exception as e:
             self.logger.error(f"Doing whatever {payload} :: {mtype} failed: {str(e)}")
